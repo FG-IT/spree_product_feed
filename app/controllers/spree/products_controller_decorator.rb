@@ -6,4 +6,4 @@ module Spree
   end
 end
 
-Spree::ProductsController.prepend Spree::ProductsControllerDecorator
+::Spree::ProductsController.prepend ::Spree::ProductsControllerDecorator unless ::Spree::ProductsController.include?(::Spree::ProductsControllerDecorator)

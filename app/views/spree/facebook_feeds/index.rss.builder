@@ -14,9 +14,12 @@ xml.rss("xmlns:g" => "http://base.google.com/ns/1.0", :version => "2.0") {
       xml.language("en-us")
     end
 
-    # @products = @products.except(:limit, :offset)
-    @products.each do |product|
-      if product.feed_active?
+    @products.find_in_batches.each do |products|
+      products.each do |product|
+        unless product.feed_active?
+          next
+        end
+
         if product.variants_and_option_values(current_currency).any?
           product.variants.each do |variant|
             if variant.show_in_product_feed?
