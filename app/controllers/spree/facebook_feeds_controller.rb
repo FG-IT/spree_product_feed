@@ -13,7 +13,9 @@ module Spree
     end
 
     def full
-      @products = ::Spree::Product.feed_active
+      page = params[:page].present? ? params[:page] : 1
+      page_size = params[:page_size].present? ? params[:page_size] : 5000
+      @products = ::Spree::Product.feed_active.limit(page_size).offset((page - 1) * page_size)
 
       render 'index'
     end
