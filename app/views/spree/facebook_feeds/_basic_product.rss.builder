@@ -7,7 +7,7 @@ unless product.property("g:description").present?
   xml.tag!("g:description", product.description.truncate(9999, separator: /\s/, omission: ''))
 end
 
-xml.tag!("g:link", spree.product_url(product))
+xml.tag!("g:link", "#{current_store.formatted_url}/#{product.slug}")
 xml.tag!("g:image_link", product.master.feed_image_link)
 xml.tag!("g:availability", product.in_stock? ? "in stock" : "out of stock")
 if defined?(product.compare_at_price) && !product.compare_at_price.nil?
@@ -32,5 +32,5 @@ end
 xml.tag!("g:sku", product.sku)
 
 unless product.product_properties.blank?
-  xml << render(partial: "props", locals: {product: product})
+  xml << render(partial: "spree/facebook_feeds/props", locals: {product: product})
 end

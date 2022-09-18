@@ -23,13 +23,13 @@ xml.rss("xmlns:g" => "http://base.google.com/ns/1.0", :version => "2.0") {
         product.variants.each do |variant|
           if variant.show_in_product_feed?
             xml.item do
-              xml << render(partial: "complex_product", locals: {product: product, variant: variant}).gsub(/^/, "      ")
+              xml << render(partial: "spree/facebook_feeds/complex_product", locals: {current_store: current_store, current_currency: current_currency, product: product, variant: variant}).gsub(/^/, "      ")
             end
           end
         end
       else
         xml.item do
-          xml << render(partial: "basic_product", locals: {product: product}).gsub(/^/, "      ")
+          xml << render(partial: "spree/facebook_feeds/basic_product", locals: {current_store: current_store, current_currency: current_currency, product: product}).gsub(/^/, "      ")
         end
       end
     end

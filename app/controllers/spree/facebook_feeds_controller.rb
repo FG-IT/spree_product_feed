@@ -13,11 +13,18 @@ module Spree
     end
 
     def full
-      page = params[:page].present? ? params[:page] : 1
-      page_size = params[:page_size].present? ? params[:page_size] : 5000
-      @products = ::Spree::Product.feed_active.limit(page_size).offset((page - 1) * page_size)
-
-      render 'index'
+      filename = 'facebook-catalog-feed.xml'
+      if ActiveStorage::Blob.service.exist?(filename)
+        if ::SpreeProductFeed.serve_directly
+          respond_to do |format|
+            format.xml { render body: ActiveStorage::Blob.service.download(filename) }
+          end
+        else
+          return redirect_to ActiveStorage::Blob.service.url(filename)
+        end
+      else
+        render plain: '404 Not Found', status: 404
+      end
     end
   end
 end

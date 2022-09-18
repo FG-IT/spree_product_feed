@@ -8,7 +8,7 @@ unless product.property("g:description").present?
   xml.tag!("g:description", product.description.truncate(9999, separator: /\s/, omission: ''))
 end
 
-xml.tag!("g:link", spree.product_url(product) + "?variant=" + variant.id.to_s)
+xml.tag!("g:link", "#{current_store.formatted_url}/#{product.slug}?variant=#{variant.id}")
 xml.tag!("g:image_link", variant.feed_image_link)
 xml.tag!("g:availability", variant.in_stock? ? "in stock" : "out of stock")
 
@@ -45,5 +45,5 @@ options_xml_hash.each do |ops|
 end
 
 unless product.product_properties.blank?
-  xml << render(partial: "props", locals: {product: product})
+  xml << render(partial: "spree/facebook_feeds/props", locals: {product: product})
 end
