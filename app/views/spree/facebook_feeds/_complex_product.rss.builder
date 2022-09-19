@@ -5,12 +5,18 @@ unless product.property("g:title").present?
 end
 
 unless product.property("g:description").present?
-  xml.tag!("g:description", product.description.truncate(9999, separator: /\s/, omission: ''))
+  if product.description.present?
+    xml.tag!("g:description", product.description.truncate(9999, separator: /\s/, omission: ''))
+  else
+    xml.tag!("g:description", product.title)
+  end
 end
 
 xml.tag!("g:link", "#{current_store.formatted_url}/#{product.slug}?variant=#{variant.id}")
 xml.tag!("g:image_link", variant.feed_image_link)
 xml.tag!("g:availability", variant.in_stock? ? "in stock" : "out of stock")
+xml.tag!("g:brand", product&.main_brand.present? ? product.main_brand : "Everymarket")
+xml.tag!("g:condition", "new")
 
 if defined?(variant.compare_at_price) && !variant.compare_at_price.nil?
   if variant.compare_at_price > product.price
@@ -26,7 +32,7 @@ end
 if variant.unique_identifier.present?
   xml.tag!("g:" + variant.unique_identifier_type, variant.unique_identifier)
 else
-  if variant.has_attribute?(:barcode)
+  if variant.has_attribute?(:barcode) && variant.barcode.present?
     xml.tag!("g:gtin", variant.barcode)
   else
     xml.tag!("g:mpn", (product&.main_brand&.gsub(/\W/, '').try(:[], 0, 2).try(:upcase) || '') + variant.id.to_s)
@@ -40,7 +46,7 @@ options_xml_hash.each do |ops|
   if ops.option_type[:name] == "color"
     xml.tag!("g:" + ops.option_type.presentation.downcase, ops.name)
   else
-    xml.tag!("g:" + ops.option_type.presentation.downcase, ops.presentation)
+    xml.tag!("g:" + ops.option_type.presentation.gsub(/[^a-z0-9_]+/i, '_').downcase, ops.presentation)
   end
 end
 

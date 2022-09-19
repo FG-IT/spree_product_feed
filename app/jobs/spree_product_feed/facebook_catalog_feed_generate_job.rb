@@ -16,7 +16,7 @@ module SpreeProductFeed
       if File.exist?(facebook_feed_path)
         service = ActiveStorage::Blob.service
         file = File.open(facebook_feed_path)
-        key = File.basename(filepath)
+        key = File.basename(facebook_feed_path)
         service.upload(key, file)
       end
     end
