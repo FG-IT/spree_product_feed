@@ -12,7 +12,7 @@ unless product.property("g:description").present?
   end
 end
 
-xml.tag!("g:link", "#{current_store.formatted_url}/#{product.slug}?variant=#{variant.id}")
+xml.tag!("g:link", "#{current_store.formatted_url}/products/#{product.slug}?variant=#{variant.id}")
 xml.tag!("g:image_link", variant.feed_image_link)
 xml.tag!("g:availability", variant.in_stock? ? "in stock" : "out of stock")
 xml.tag!("g:brand", product&.main_brand.present? ? product.main_brand : "Everymarket")
